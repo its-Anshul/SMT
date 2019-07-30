@@ -1,6 +1,4 @@
 FROM ubuntu:14.04
-MAINTAINER Vishal Lall "vishal.lall@caci.com"
-LABEL Description="Install Moses SMT API" Version="1.2"
 EXPOSE 5000
 
 RUN apt-get update && apt-get install -y \
@@ -30,6 +28,7 @@ RUN pip install \
    flask-api
 
 RUN mkdir -p /home/moses
+ADD ./training.sh /home/moses/training.sh
 WORKDIR /home/moses
 RUN git clone https://github.com/moses-smt/mosesdecoder
 RUN mkdir moses-models
@@ -100,5 +99,7 @@ RUN rm sample-models.tgz
 
 WORKDIR /home/moses/mosesdecoder
 #  COMPILE MOSES (Takes awhile...)
-#RUN ./bjam --with-boost=/home/moses/Downloads/boost_1_60_0 --with-cmph=/home/moses/cmph-2.0 --with-irstlm=/home/moses/irstlm -j12
-#WORKDIR /home/moses/
+RUN ./bjam --with-boost=/home/moses/Downloads/boost_1_60_0 --with-cmph=/home/moses/cmph-2.0 --with-irstlm=/home/moses/irstlm -j12
+WORKDIR /home/moses/
+# ENTRYPOINT ./training.sh
+ENTRYPOINT ping google.com
